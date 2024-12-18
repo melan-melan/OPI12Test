@@ -1,0 +1,124 @@
+#include <iostream>
+using namespace std;
+
+//сделать проверку на правильный ввод
+
+char board[9] = { '-', '-', '-', '-', '-', '-', '-', '-', '-' }; // массив поля
+
+bool has_won(char player) // условие выигрыша
+{
+    int wins[][3] = { {0, 1, 2}, {3, 4, 5}, {6, 7, 8},{0, 3, 6}, {1, 4, 7}, {2, 5, 8},{0, 4, 8}, {2, 4, 6} };
+    // выигрышные комбинации
+    for (int i = 0; i < 8; i++)// прверка на выигрышные комбинации
+    {
+        if (board[wins[i][0]] == player &&
+            board[wins[i][1]] == player &&
+            board[wins[i][2]] == player)
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
+void print_board() // вывод поля
+{
+    cout << "Игровое поле\n";
+    cout << "-" << board[0] << "-|-" << board[1] << "-|-" << board[2] << "-\n";
+    cout << "-" << board[3] << "-|-" << board[4] << "-|-" << board[5] << "-\n";
+    cout << "-" << board[6] << "-|-" << board[7] << "-|-" << board[8] << "-\n";
+}
+
+
+int get_move(char player)
+{
+    system("cls");//очистить экран
+    setlocale(0, "ru");
+    // подсказка
+    cout << "Управление\n";
+    cout << "-1-|-2-|-3-\n";
+    cout << "-4-|-5-|-6-\n";
+    cout << "-7-|-8-|-9-\n";
+    
+    
+    cout << endl;
+    print_board();
+    cout << "ход "<< player <<":\n";
+
+    char hod;
+    int move;
+    cin >> hod;
+    cin.ignore(32767, '\n');
+    move = hod-'0';
+
+        while ( board[move - 1] != '-') // проверка введённого числа
+        {
+            if (move != 1 && move != 2 && move != 3 && move != 4 && move != 5 && move != 6 && move != 7 && move != 8 && move != 9 && move != 0) {
+                cout << "Введите  цифру (1-9)\n";
+                cin >> hod;
+                cin.ignore(32767, '\n');
+                move = hod - '0';
+            }
+            else {
+                cout << "клетка занята,введите другой ход (1-9)\n";
+                cin >> hod;
+                cin.ignore(32767, '\n');
+                move = hod - '0';
+            }
+        }
+        return move;
+  }
+
+
+char play() // игра и проверка комбинаций
+{
+    char player = 'X';
+    bool step = true;
+    int turn = 0;
+    while (!has_won('X') && !has_won('O') && turn < 9)
+    {
+        if (step == true)
+            player = 'X';
+        else
+            player = 'O';
+        step = !step;
+        int move = get_move(player);
+
+        if (turn % 2 == 0)
+        {
+            board[move - 1] = 'X';
+            if (has_won('X'))
+            {
+                cout << "Выиграл игрок 'X'!\n";
+                print_board();
+                return 'X';
+            }
+        }
+        else
+        {
+            board[move - 1] = 'O';
+            if (has_won('O'))
+            {
+                cout << "Выиграл игрок 'O'!\n";
+                print_board();
+                return 'O';
+            }
+        }
+
+        turn++;
+    }
+    print_board();
+
+    cout << "Ничья :(\n";
+    return 'D';
+}
+
+int main() 
+{
+    system("color F0");// можно менять цвет
+
+    play();
+
+    return 0;
+}
+
